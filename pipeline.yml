@@ -1,0 +1,24 @@
+resources:
+- name: source-code
+  type: git
+  source:
+    uri: https://github.com/olufemi2/concourse.git
+    branch: main
+
+- name: canary-deployment
+  type: git
+  source:
+    uri: https://github.com/olufemi2/concourse.git
+    branch: canary-deployment
+
+jobs:
+- name: build-and-deploy-canary
+  plan:
+  - get: source-code
+    trigger: true
+  - get: canary-deployment
+    trigger: true
+  - task: build
+    file: source-code/ci/tasks/build.yml
+  - task: deploy-canary
+    file: canary-deployment/ci/tasks/deploy.yml
